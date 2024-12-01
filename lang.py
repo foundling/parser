@@ -1,4 +1,4 @@
-def eval_expr(expr, line_no=1, names={}):
+def eval_expr(expr, names={}):
 
     stack = []
     tokens = expr.strip().split()
@@ -49,12 +49,12 @@ def eval(lines):
 
             name, expr = line.split('=', maxsplit=1)
             try:
-                names[name.strip()] = eval_expr(expr, pc, names) 
+                names[name.strip()] = eval_expr(expr, names) 
             except KeyError:
                 print(f"{name.strip()} is undefined on line {pc}")
                 exit(1)
         else:
-            eval_expr(line_no, line, names)
+            eval_expr(line, names)
 
         pc += 1
 
