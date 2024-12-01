@@ -1,4 +1,4 @@
-def eval_expr(expr, line_no, names):
+def eval_expr(expr, line_no=1, names={}):
 
     stack = []
     tokens = expr.strip().split()
@@ -27,11 +27,10 @@ def eval_expr(expr, line_no, names):
 
         else:
             if token.isalpha():
-                try:
+                if not token in names:
+                    raise KeyError
+                else:
                     stack.append(names[token])
-                except KeyError:
-                    print(f"{line_no}: token not defined: {token}")
-                    exit(1)
             else:
                 stack.append(int(token))
 
@@ -47,8 +46,13 @@ def eval(lines):
         line = lines[pc]
 
         if len(line.split('=', maxsplit=1)) == 2:
+
             name, expr = line.split('=', maxsplit=1)
-            names[name.strip()] = eval_expr(expr, pc, names)
+            try:
+                names[name.strip()] = eval_expr(expr, pc, names) 
+            except KeyError:
+                print(f"{name.strip()} is undefined on line {pc}")
+                exit(1)
         else:
             eval_expr(line_no, line, names)
 

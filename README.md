@@ -1,3 +1,3 @@
 # alex
 
-my first programming language
+my first programming language, dedicated to myself.
