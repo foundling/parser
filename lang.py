@@ -26,6 +26,7 @@ def eval_expr(expr, names={}):
             stack.append(lhs * rhs)
 
         else:
+            # try to resolve existing identifier
             if token.isalpha():
                 if not token in names:
                     raise KeyError
@@ -36,37 +37,77 @@ def eval_expr(expr, names={}):
 
     return stack.pop()
 
-def eval(lines):
+def eval(lines, names={}):
 
     pc = 0
-    names = {}
 
     while pc < len(lines):
 
-        line = lines[pc]
+        line = lines[pc].strip()
 
+        # skip evaluation for blank lines and comments, but include in line count
+        if not len(line.strip()) or line.strip().startswith('#'):
+            pc += 1
+            continue
+
+        # TODO: re-think parsing an assignment, here you're treating it as an alternative
+        # to evaluating an expression, but an assignment line has 'name =' then an expression.
+        # try 
+
+        # assignment line
         if len(line.split('=', maxsplit=1)) == 2:
 
-            name, expr = line.split('=', maxsplit=1)
+            name, expr = [ segment.strip() for segment in line.split('=', maxsplit=1) ]
+
             try:
-                names[name.strip()] = eval_expr(expr, names) 
+                names[name] = eval_expr(expr, names)
             except KeyError:
-                print(f"{name.strip()} is undefined on line {pc}")
+                print(f"{name} is undefined on line {pc + 1}")
                 exit(1)
         else:
-            eval_expr(line, names)
+            if line.startswith('while'):
+
+                while_start = pc
+                while not lines[pc].startswith('end'):
+                    pc += 1
+                while_end = pc
+                while_code_lines = lines[while_start + 1: while_end] 
+
+                pc = while_start + 1
+                while pc < while_end:
+
+                    if len(lines[pc].split('=', maxsplit=1)) == 2:
+
+                        name, expr = [ segment.strip() for segment in lines[pc].split('=', maxsplit=1) ]
+                        try:
+                            names[name] = eval_expr(expr, names)
+                        except KeyError:
+                            print(f"{name} is undefined on line {pc + 1}")
+                            exit(1)
+                    else:
+                        try:
+                            eval_expr(lines[pc], names)
+                        except KeyError:
+                            print(f"{line} is undefined on line {pc + 1}")
+
+                    pc += 1
+
+
+
+            '''
+            try:
+                eval_expr(line, names)
+            except KeyError:
+                print(f"{line} is undefined on line {pc + 1}")
+            '''
 
         pc += 1
 
-    print(names)
-    
+    print('names: ', names)
+
 
 if __name__ == '__main__':
 
-    f = [ 
-         line for line
-         in open('main.alex').readlines()
-         if len(line.strip()) 
-         and not line.strip().startswith('#') ]
+    src = open('main.alex').readlines()
 
-    eval(f)
+    eval(src, {})
