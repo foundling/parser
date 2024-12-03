@@ -1,3 +1,5 @@
+import re
+
 class Tokenizer():
 
     def __init__(self):
@@ -19,39 +21,23 @@ class Tokenizer():
         if not self.hasMoreTokens():
             return None
 
+        # match a number
         string = self._string[self._cursor:]
+        matched = re.match('\d+', string)
 
-        # parse Number
-        if string[self._cursor].isdigit():
-
-            number = ''
-            while self._cursor < len(string) and string[self._cursor].isdigit():
-                print('string: ', string, self._cursor)
-                number += string[self._cursor]
-                self._cursor += 1
-
+        if matched:
+            self._cursor += len(matched[0])
             return {
                 "type": 'NUMBER',
-                "value": int(number)
+                "value": int(matched[0])
             }
 
-        # parse String
-        if string[0] == '"':
+        # Match a string
+        matched = re.match("'([^'].*?)'", string)
 
-            s = ''
-            s += self._string[self._cursor]
-            self._cursor += 1
-
-            while self._string[self._cursor] != '"' and not self.isEOF():
-                s += self._string[self._cursor]
-                self._cursor += 1
-
-            s += self._string[self._cursor]
-            self._cursor += 1
-
-            print("VALUE: ", s)
+        if matched:
+            self._cursor += len(matched[0])
             return {
                 "type": 'STRING',
-                "value": s
-
+                "value": matched[0]
             }
