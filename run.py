@@ -1,8 +1,5 @@
 from parser import Parser
 
 parser = Parser()
-#program = "'hello'";
-program = "'hello'";
-
-ast = parser.parse(program)
+ast = parser.parse(" 42 ")
 print(ast)
