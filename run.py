@@ -1,5 +1,9 @@
 from parser import Parser
 
 parser = Parser()
-ast = parser.parse(" 42 ")
+program = '''
+    42
+// comment
+'''
+ast = parser.parse(program)
 print(ast)

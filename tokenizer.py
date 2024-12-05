@@ -3,14 +3,17 @@ import re
 spec = [
 
     # Whitespace
-    ['\s+', None],
+    [r"\s+", None],
+
+    # Comments
+    [r"//.*$", None],
 
     # Numbers
-    ['\d+','NUMBER'],
+    ["\d+",'NUMBER'],
 
     # Strings
-    ["'[^']*'",'STRING'],
-    ['"[^"]*"','STRING']
+    [r"'[^']*'",'STRING'],
+    [r'"[^"]*"','STRING']
 
 ]
 
@@ -33,7 +36,6 @@ class Tokenizer():
 
         #import pdb; pdb.set_trace()
         if not self.hasMoreTokens():
-            print('no more tokens')
             return None
 
         string = self._string[self._cursor:]
@@ -48,8 +50,8 @@ class Tokenizer():
 
             # it's whitespace, ignore
             if matched_token and token_type is None:
-                print('ignoring whitespace')
                 return self.getNextToken()
+
 
             return {
                 "type": token_type,
@@ -60,7 +62,13 @@ class Tokenizer():
 
     def _match(self, regexp, string):
 
-        matched = re.match(regexp, string)
+        #TODO: should we use re.MULTILINE flag?
+        matched = re.match(regexp, string, flags=re.MULTILINE)
+        '''
+        print('re:'+ regexp)
+        print('string:['+ string + ']')
+        print('matched:', matched)
+        '''
 
         if matched:
             self._cursor += len(matched[0])
