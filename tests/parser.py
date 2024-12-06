@@ -5,4 +5,3 @@ def test_parser():
     program = '42'
     ast = parser.parse(program)
     assert ast["body"]["value"] == 42
-

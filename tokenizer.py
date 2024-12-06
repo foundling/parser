@@ -5,8 +5,11 @@ spec = [
     # Whitespace
     [r"\s+", None],
 
-    # Comments
+    # Single-Line Comments
     [r"//.*$", None],
+
+    # Multi-Line Comments
+    [r"/\*[\s\S]*?\*/", None], # Note: \s is whitespace, and \S is shorthand for ^\s.
 
     # Numbers
     ["\d+",'NUMBER'],

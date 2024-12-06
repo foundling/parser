@@ -3,7 +3,12 @@ from parser import Parser
 parser = Parser()
 program = '''
     42
-// comment
+    "hello"
+/*
+* a multi-line comment
+*/
+
+// hi
 '''
 ast = parser.parse(program)
 print(ast)
