@@ -1,5 +1,6 @@
 import re
 
+# Tokenizer Spec
 spec = [
 
     # Whitespace
@@ -12,10 +13,12 @@ spec = [
     [r"/\*[\s\S]*?\*/", None], # Note: \s is whitespace, and \S is shorthand for ^\s.
 
     # Numbers
-    ["\d+",'NUMBER'],
+    [r"\d+",'NUMBER'],
 
-    # Strings
+    # Single-Quote String
     [r"'[^']*'",'STRING'],
+
+    # Double-Quote String
     [r'"[^"]*"','STRING']
 
 ]
@@ -37,7 +40,6 @@ class Tokenizer():
 
     def getNextToken(self):
 
-        #import pdb; pdb.set_trace()
         if not self.hasMoreTokens():
             return None
 
