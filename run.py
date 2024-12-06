@@ -1,7 +1,9 @@
 from parser import Parser
+import pprint
+import json
 
 parser = Parser()
-program = '" hello, world! "'
-
+program = '42; "hello"; /* asdf */'
 ast = parser.parse(program)
-print(ast)
+json = json.dumps(ast)
+print(json)

@@ -19,7 +19,9 @@ spec = [
     [r"'[^']*'",'STRING'],
 
     # Double-Quote String
-    [r'"[^"]*"','STRING']
+    [r'"[^"]*"','STRING'],
+
+    [r';', ';']
 
 ]
 

@@ -32,13 +32,53 @@ class Parser():
         '''
         main entry point
         Program
-            : NumericLiteral
+            : StatementList
+            | StatementList Statement -> Statement Statement Statement Statement
             ;
         '''
         return {
             'type': 'Program',
-            'body': self.Literal()
+            'body': self.StatementList()
         }
+
+    def Statement(self):
+        '''
+        Statement
+            : ExpressionStatement
+            ;
+
+        '''
+        return self.ExpressionStatement()
+
+    def ExpressionStatement(self):
+        '''
+        ExpressionStatement
+            : Expression ';'
+            ;
+        '''
+        expression = self.Expression()
+        self._eat(';')
+        return {
+            "type": 'ExpressionStatement', 
+            "expression": expression,
+        }
+
+    def Expression(self):
+        '''
+            Expression
+                : Literal
+                ;
+        '''
+        return self.Literal()
+
+    def StatementList(self):
+
+        statementList = [self.Statement()]
+
+        while (self._lookahead is not None):
+            statementList.append(self.Statement())
+
+        return statementList
 
     def Literal(self):
 
