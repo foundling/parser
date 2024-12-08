@@ -1,3 +1,3 @@
 # Parser
 
-A Python implementation of the JS parser from Dmitry Soshnikov's Course 'Building a Parser From Scratch'.
+A Python implementation of Dmitry Soshnikov's (recursive descent parser)[https://github.com/DmitrySoshnikov/letter-rdp-source] from his course, ('Building a Parser From Scratch')[http://dmitrysoshnikov.com/courses/parser-from-scratch/].
