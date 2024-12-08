@@ -41,6 +41,15 @@ class Parser():
             'body': self.StatementList()
         }
 
+    def StatementList(self):
+
+        statementList = [self.Statement()]
+
+        while (self._lookahead is not None):
+            statementList.append(self.Statement())
+
+        return statementList
+
     def Statement(self):
         '''
         Statement
@@ -70,15 +79,6 @@ class Parser():
                 ;
         '''
         return self.Literal()
-
-    def StatementList(self):
-
-        statementList = [self.Statement()]
-
-        while (self._lookahead is not None):
-            statementList.append(self.Statement())
-
-        return statementList
 
     def Literal(self):
 
