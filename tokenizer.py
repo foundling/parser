@@ -21,7 +21,14 @@ spec = [
     # Double-Quote String
     [r'"[^"]*"','STRING'],
 
-    [r';', ';']
+    # End of Statement marker
+    [r';', ';'],
+
+    # Beginning of Block
+    [r'{', '{'],
+
+    # End of Block
+    [r'}', '}']
 
 ]
 
