@@ -1,13 +1,15 @@
 from ..parser import Parser
+import pytest
 
 
+@pytest.fixture
+def parser():
+    return Parser()
 
-
-def test_string_literal_single_quote():
+def test_string_literal_single_quote(parser):
 
     program = '"hello, world!";'
-    p = Parser()
-    ast = p.parse(program)
+    ast = parser.parse(program)
 
     assert ast == {
         "type": "Program",
@@ -20,11 +22,10 @@ def test_string_literal_single_quote():
         }]
     }
 
-def test_numeric_literal():
+def test_numeric_literal(parser):
 
     program = '''42;'''
-    p = Parser()
-    ast = p.parse(program)
+    ast = parser.parse(program)
 
     assert ast == {
         "type": "Program",
@@ -37,10 +38,11 @@ def test_numeric_literal():
         }]
     }
 
-def test_string_literal_double_quote():
+def test_string_literal_double_quote(parser):
+
     program = "'hello, world!';"
-    p = Parser()
-    ast = p.parse(program)
+    ast = parser.parse(program)
+
     assert ast == {
         "type": "Program",
         "body": [{
