@@ -1,8 +1,7 @@
-from parser import Parser
-import pprint
+from src import parser
 import json
 
-parser = Parser()
+parser = parser.Parser()
 program = '''
 {
     42;

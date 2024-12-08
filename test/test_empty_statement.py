@@ -1,5 +1,4 @@
-
-from ..parser import Parser
+from parser.src.parser import Parser
 import pytest
 
 
