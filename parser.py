@@ -2,6 +2,7 @@ from tokenizer import Tokenizer
 
 AST_MODE = 'default'
 
+
 class DefaultFactory():
 
     def Program(self, body):
@@ -15,7 +16,7 @@ class DefaultFactory():
             "type": "EmptyStatement"
         }
 
-    def BlockStatement(self,body):
+    def BlockStatement(self, body):
         return {
             "type": "BlockStatement",
             "body": body
@@ -23,27 +24,27 @@ class DefaultFactory():
 
     def ExpressionStatement(self, expression):
         return {
-            "type": 'ExpressionStatement', 
+            "type": 'ExpressionStatement',
             "expression": expression,
         }
 
-    def StringLiteral(self,value):
+    def StringLiteral(self, value):
         return {
             "type": "StringLiteral",
             "value": value,
         }
 
-    def NumericLiteral(self,value):
+    def NumericLiteral(self, value):
         return {
             "type": "NumericLiteral",
             "value": value
         }
 
 
-
 factory = None
 if AST_MODE == 'default':
     factory = DefaultFactory()
+
 
 class Parser():
 
@@ -57,7 +58,7 @@ class Parser():
 
         self._lookahead = self._tokenizer.getNextToken()
 
-        return self.Program();
+        return self.Program()
 
     def _eat(self, tokenType):
 
@@ -67,8 +68,9 @@ class Parser():
             raise SyntaxError('unexpected end of input')
 
         if (token['type'] != tokenType):
-            raise SyntaxError(f"unexpected token {token['value']}: expected {tokenType}")
-         
+            raise SyntaxError(
+                f"unexpected token {token['value']}: expected {tokenType}")
+
         self._lookahead = self._tokenizer.getNextToken()
 
         return token
@@ -104,7 +106,7 @@ class Parser():
         if self._lookahead['type'] == '{':
             return self.BlockStatement()
         elif self._lookahead['type'] == ';':
-            return self.EmptyStatement();
+            return self.EmptyStatement()
 
         return self.ExpressionStatement()
 
@@ -132,7 +134,7 @@ class Parser():
 
         self._eat('}')
 
-        return factory.BlockStatement(body) 
+        return factory.BlockStatement(body)
 
     def ExpressionStatement(self):
         '''
@@ -177,4 +179,3 @@ class Parser():
         value = int(token['value'])
 
         return factory.NumericLiteral(value)
-
