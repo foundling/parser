@@ -28,8 +28,10 @@ spec = [
     [r'{', '{'],
 
     # End of Block
-    [r'}', '}']
+    [r'}', '}'],
 
+    # Math: Addition
+    [r'[+-]', "ADDITIVE_OPERATOR"],
 ]
 
 class Tokenizer():

@@ -23,6 +23,7 @@ class DefaultFactory():
         }
 
     def ExpressionStatement(self, expression):
+        # logic to determine if it's a complex expression or not.
         return {
             "type": 'ExpressionStatement',
             "expression": expression,
@@ -38,6 +39,14 @@ class DefaultFactory():
         return {
             "type": "NumericLiteral",
             "value": value
+        }
+
+    def BinaryExpression(self, left, right):
+        return {
+            "type": "BinaryExpression",
+            "operator": "+",
+            "left": self.NumericLiteral(left),
+            "right": self.NumericLiteral(right)
         }
 
 
@@ -144,6 +153,7 @@ class Parser():
         '''
         expression = self.Expression()
         self._eat(';')
+
         return factory.ExpressionStatement(expression)
 
     def Expression(self):
@@ -152,7 +162,37 @@ class Parser():
                 : Literal
                 ;
         '''
-        return self.Literal()
+        return self.AdditiveExpression()
+
+    def AdditiveExpression(self):
+
+        ''' AdditiveExpression
+            : Literal
+            | AdditiveExpression ADDITIVE_OPERATOR Literal -> Literal ADDITIVE_OPERATOR Literal ADDITIVE_OPERATOR
+            ;
+        '''
+
+        left = self.Literal()
+        right = None
+
+        # looks ahead for an additive, and consumes left <op> right, repeatedly
+        # until we are out of additive operators.
+        while self._lookahead["type"] == "ADDITIVE_OPERATOR":
+            operator = self._eat("ADDITIVE_OPERATOR")["value"]
+            right = self.Literal()
+
+            # enforces left associativity
+            # left hand side repeatedly gets nested inside of previous left hand side
+            # eg. 3 + 2 - 2 - 2
+            # becomes ((3 + 2) - 2) - 2
+            left = {
+                "type": "BinaryExpression",
+                "operator": operator,
+                "left": left,
+                "right": right
+            }
+
+        return left;
 
     def Literal(self):
 

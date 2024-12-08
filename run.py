@@ -4,7 +4,7 @@ import json
 parser = parser.Parser()
 program = '''
 {
-    42;
+    3 + 2 - 2;
 }
 '''
 ast = parser.parse(program)
