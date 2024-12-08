@@ -3,7 +3,11 @@ import pprint
 import json
 
 parser = Parser()
-program = '42; "hello"; /* asdf */'
+program = '''
+{
+    42;
+}
+'''
 ast = parser.parse(program)
 json = json.dumps(ast)
 print(json)
