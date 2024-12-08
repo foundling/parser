@@ -1,5 +1,50 @@
 from tokenizer import Tokenizer
 
+AST_MODE = 'default'
+
+class DefaultFactory():
+
+    def Program(self, body):
+        return {
+            "type": "Program",
+            "body": body
+        }
+
+    def EmptyStatement(self):
+        return {
+            "type": "EmptyStatement"
+        }
+
+    def BlockStatement(self,body):
+        return {
+            "type": "BlockStatement",
+            "body": body
+        }
+
+    def ExpressionStatement(self, expression):
+        return {
+            "type": 'ExpressionStatement', 
+            "expression": expression,
+        }
+
+    def StringLiteral(self,value):
+        return {
+            "type": "StringLiteral",
+            "value": value,
+        }
+
+    def NumericLiteral(self,value):
+        return {
+            "type": "NumericLiteral",
+            "value": value
+        }
+
+
+
+factory = None
+if AST_MODE == 'default':
+    factory = DefaultFactory()
+
 class Parser():
 
     def __init__(self):
@@ -36,10 +81,7 @@ class Parser():
             | StatementList Statement -> Statement Statement Statement Statement
             ;
         '''
-        return {
-            'type': 'Program',
-            'body': self.StatementList()
-        }
+        return factory.Program(self.StatementList())
 
     def StatementList(self, stopLookahead=None):
 
@@ -76,9 +118,7 @@ class Parser():
 
         self._eat(';')
 
-        return {
-            "type": "EmptyStatement"
-        }
+        return factory.EmptyStatement()
 
     def BlockStatement(self):
 
@@ -92,10 +132,7 @@ class Parser():
 
         self._eat('}')
 
-        return {
-                "type": "BlockStatement",
-                "body": body
-        }
+        return factory.BlockStatement(body) 
 
     def ExpressionStatement(self):
         '''
@@ -105,10 +142,7 @@ class Parser():
         '''
         expression = self.Expression()
         self._eat(';')
-        return {
-            "type": 'ExpressionStatement', 
-            "expression": expression,
-        }
+        return factory.ExpressionStatement(expression)
 
     def Expression(self):
         '''
@@ -130,10 +164,8 @@ class Parser():
     def StringLiteral(self):
 
         token = self._eat('STRING')
-        return {
-            "type": "StringLiteral",
-            "value": token["value"][1:-1]
-        }
+        value = token["value"][1:-1]
+        return factory.StringLiteral(value)
 
     def NumericLiteral(self):
         '''
@@ -142,8 +174,7 @@ class Parser():
             ;
         '''
         token = self._eat('NUMBER')
+        value = int(token['value'])
 
-        return {
-            "type": "NumericLiteral",
-            "value": int(token['value'])
-        }
+        return factory.NumericLiteral(value)
+
