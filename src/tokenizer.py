@@ -32,6 +32,12 @@ spec = [
 
     # Math: Addition
     [r'[+-]', "ADDITIVE_OPERATOR"],
+    
+    # Math: Multiplication
+    [r'[*/]', "MULTIPLICATIVE_OPERATOR"],
+
+    # Math: Parentheses
+    [r'\(', "PARENTHESES_OPERATOR"],
 ]
 
 class Tokenizer():
@@ -74,6 +80,7 @@ class Tokenizer():
                 "value": matched_token
             }
         
+        print(token_type, regexp)
         raise SyntaxError(f"Unexpected Token: {string[0]}") 
 
     def _match(self, regexp, string):

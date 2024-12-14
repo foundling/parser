@@ -23,7 +23,6 @@ class DefaultFactory():
         }
 
     def ExpressionStatement(self, expression):
-        # logic to determine if it's a complex expression or not.
         return {
             "type": 'ExpressionStatement',
             "expression": expression,
@@ -172,19 +171,19 @@ class Parser():
             ;
         '''
 
-        left = self.Literal()
+        # try
+        # 1
+        # 1 + 4
+        # 2 * 2 + 3 
+        # NOTE: at this point in the parser code progress,
+        # we try to consume as many multiplicative expressions before adding because of their higher precedence.
+        left = self.MultiplicativeExpression()
         right = None
 
-        # looks ahead for an additive, and consumes left <op> right, repeatedly
-        # until we are out of additive operators.
         while self._lookahead["type"] == "ADDITIVE_OPERATOR":
             operator = self._eat("ADDITIVE_OPERATOR")["value"]
-            right = self.Literal()
+            right = self.MultiplicativeExpression()
 
-            # enforces left associativity
-            # left hand side repeatedly gets nested inside of previous left hand side
-            # eg. 3 + 2 - 2 - 2
-            # becomes ((3 + 2) - 2) - 2
             left = {
                 "type": "BinaryExpression",
                 "operator": operator,
@@ -193,6 +192,47 @@ class Parser():
             }
 
         return left;
+
+    def MultiplicativeExpression(self):
+
+        left = self.PrimaryExpression()
+
+        right = None
+
+        while self._lookahead["type"] == "MULTIPLICATIVE_OPERATOR":
+            operator = self._eat("MULTIPLICATIVE_OPERATOR")["value"]
+            right = self.PrimaryExpression()
+            left = {
+                "type": "BinaryExpression",
+                "operator": operator,
+                "left": left,
+                "right": right
+            }
+
+        return left;
+
+    def ParenthesizedExpression(self):
+
+        left = self.PrimaryExpression()
+
+        right = None
+
+        while self._lookahead["type"] == "PARENTHESIS_OPERATOR":
+            operator = self._eat("PARENTHESIS_OPERATOR")["value"]
+            right = self.PrimaryExpression()
+            left = {
+                "type": "BinaryExpression",
+                "operator": operator,
+                "left": left,
+                "right": right
+            }
+
+        return left;
+
+
+    def PrimaryExpression(self):
+        return self.Literal()
+
 
     def Literal(self):
 
