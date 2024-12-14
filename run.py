@@ -9,4 +9,4 @@ program = '''
 '''
 ast = parser.parse(program)
 json = json.dumps(ast)
-#print(json)
+print(json)

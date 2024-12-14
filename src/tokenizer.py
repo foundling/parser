@@ -30,14 +30,18 @@ spec = [
     # End of Block
     [r'}', '}'],
 
+    # Opening Parenthesis
+    [r'\(', '('],
+ 
+    # Closing Parenthesis
+    [r'\)', ')'],
+
     # Math: Addition
     [r'[+-]', "ADDITIVE_OPERATOR"],
     
     # Math: Multiplication
     [r'[*/]', "MULTIPLICATIVE_OPERATOR"],
 
-    # Math: Parentheses
-    [r'\(', "PARENTHESES_OPERATOR"],
 ]
 
 class Tokenizer():

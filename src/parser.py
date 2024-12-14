@@ -171,12 +171,6 @@ class Parser():
             ;
         '''
 
-        # try
-        # 1
-        # 1 + 4
-        # 2 * 2 + 3 
-        # NOTE: at this point in the parser code progress,
-        # we try to consume as many multiplicative expressions before adding because of their higher precedence.
         left = self.MultiplicativeExpression()
         right = None
 
@@ -213,26 +207,22 @@ class Parser():
 
     def ParenthesizedExpression(self):
 
-        left = self.PrimaryExpression()
-
-        right = None
-
-        while self._lookahead["type"] == "PARENTHESIS_OPERATOR":
-            operator = self._eat("PARENTHESIS_OPERATOR")["value"]
-            right = self.PrimaryExpression()
-            left = {
-                "type": "BinaryExpression",
-                "operator": operator,
-                "left": left,
-                "right": right
-            }
-
-        return left;
-
+        self._eat("(")
+        expression = self.Expression();
+        self._eat(")")
+        return expression
 
     def PrimaryExpression(self):
-        return self.Literal()
+        '''
+            Primary Expression
+            : Literal
+            | ParenthesizedExpression
+            ;
+        '''
+        if self._lookahead["type"] == "(":
+            return self.ParenthesizedExpression()
 
+        return self.Literal()
 
     def Literal(self):
 
