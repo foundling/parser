@@ -175,7 +175,7 @@ def test_multiplicative_expression3(parser):
 
 def test_parenthesized_expression(parser):
 
-    program = '(2 + 2) * 2'
+    program = '(2 + 2) * 2;'
     ast = parser.parse(program)
 
     assert ast == {
@@ -206,4 +206,29 @@ def test_parenthesized_expression(parser):
         }]
 
 
+    }
+
+def test_multiplicative_expression4(parser):
+
+    program = '2 * 2;'
+    ast = parser.parse(program)
+
+    assert ast == {
+
+        "type": "Program",
+        "body": [{
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "BinaryExpression",
+                "operator": "*",
+                "left": {
+                    "type": "NumericLiteral",
+                    "value": 2
+                },
+                "right": {
+                    "type": "NumericLiteral",
+                    "value": 2
+                }
+            }
+        }]
     }
