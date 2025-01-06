@@ -179,12 +179,12 @@ class Parser():
             ;
         '''
 
-        left = self.MultiplicativeExpression()
+        left = self._BinaryExpression('MultiplicativeExpression', 'ADDITIVE_OPERATOR')
         right = None
 
         while self._lookahead["type"] == "ADDITIVE_OPERATOR":
             operator = self._eat("ADDITIVE_OPERATOR")["value"]
-            right = self.MultiplicativeExpression()
+            right = self._BinaryExpression('MultiplicativeExpression', 'ADDITIVE_OPERATOR')
 
             left = {
                 "type": "BinaryExpression",
@@ -197,13 +197,12 @@ class Parser():
 
     def MultiplicativeExpression(self):
 
-        left = self.PrimaryExpression()
-
+        left = self._BinaryExpression('PrimaryExpression', 'MULTIPLICATIVE_OPERATOR')
         right = None
 
         while self._lookahead["type"] == "MULTIPLICATIVE_OPERATOR":
             operator = self._eat("MULTIPLICATIVE_OPERATOR")["value"]
-            right = self.PrimaryExpression()
+            right = self._BinaryExpression('PrimaryExpression', 'MULTIPLICATIVE_OPERATOR')
             left = {
                 "type": "BinaryExpression",
                 "operator": operator,
@@ -212,6 +211,24 @@ class Parser():
             }
 
         return left;
+
+    ''' generic binary expression - used to parse additive and multiplicative expressions '''
+    def _BinaryExpression(self, builderName, operatorToken):
+        left = getattr(self, builderName)() 
+        right = None
+
+        while self._lookahead["type"] == operatorToken:
+
+            operator = self._eat(operatorToken)["value"]
+            right = getattr(self, builderName)() 
+            left = {
+                "type": "BinaryExpression",
+                "operator": operator,
+                "left": left,
+                "right": right
+            }
+
+        return left
 
     def PrimaryExpression(self):
         '''
