@@ -163,11 +163,19 @@ class Parser():
         '''
         return self.AdditiveExpression()
 
+    ''' some probably unclear notes on how this parser achieves correct order of precidence (mult/div higher than add/sub):
+    - the Additive/Multiplicative Primary Expression types control the flow of parsing.
+    - the expression type with the lowest precidence is processed first, and in terms of more specific types
+    - i.e. first step is processing expression as if it's additive. then inside that, process operands as if they
+    are types w/ higher precidence, i.e. multiplicative, but they can also trivially be numeric literals.
+    - if those sub exps are multiplicative, they get processed that way.  otherwise, the additive keeps associating
+    left, building binary expressions. 
+    '''
     def AdditiveExpression(self):
 
-        ''' AdditiveExpression
+        ''' MultiplicativeExpression
             : Literal
-            | AdditiveExpression ADDITIVE_OPERATOR Literal -> Literal ADDITIVE_OPERATOR Literal ADDITIVE_OPERATOR
+            | MultiplicativeExpression ADDITIVE_OPERATOR MultiplicativeExpression -> MultiplicativeExpression ADDITIVE_OPERATOR MultiplicativeExpression
             ;
         '''
 
@@ -205,13 +213,6 @@ class Parser():
 
         return left;
 
-    def ParenthesizedExpression(self):
-
-        self._eat("(")
-        expression = self.Expression();
-        self._eat(")")
-        return expression
-
     def PrimaryExpression(self):
         '''
             Primary Expression
@@ -219,10 +220,24 @@ class Parser():
             | ParenthesizedExpression
             ;
         '''
+        # this is how we achieve higher precidence when using parentheses.
         if self._lookahead["type"] == "(":
             return self.ParenthesizedExpression()
 
         return self.Literal()
+
+    '''
+        ParenthesizedExpression
+        : '(' Expression ')'
+        ;
+    '''
+    def ParenthesizedExpression(self):
+
+        self._eat("(")
+        expression = self.Expression();
+        self._eat(")")
+        return expression
+
 
     def Literal(self):
 
